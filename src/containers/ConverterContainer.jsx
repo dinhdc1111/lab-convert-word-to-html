@@ -1,113 +1,92 @@
-import { useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { useFileUpload } from '../hooks/useFileUpload';
 import { useConversion } from '../hooks/useConversion';
 import { downloadAsHtml, copyToClipboard } from '../services/exportService';
 
-import FileUploader from '../components/FileUploader/FileUploader';
-import ConversionControls from '../components/ConversionControls/ConversionControls';
-import HtmlPreview from '../components/HtmlPreview/HtmlPreview';
-import ExportActions from '../components/ExportActions/ExportActions';
+import Header from '../components/layout/Header';
+import Sidebar from '../components/layout/Sidebar';
+import Toolbar from '../components/editor/Toolbar';
+import DocumentPreview from '../components/editor/DocumentPreview';
+import HtmlOutput from '../components/editor/HtmlOutput';
 
-const styles = {
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1.5rem',
-  },
-  section: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '1rem',
-  },
-  divider: {
-    border: 'none',
-    borderTop: '1px solid #e5e7eb',
-    margin: '0.5rem 0',
-  },
-};
-
-/**
- * Smart container — the ONLY component that knows about hooks and services.
- * Composes all presentational components and wires props from hooks.
- */
 export default function ConverterContainer() {
+  const [activeTab, setActiveTab] = useState("editor");
+  const [exportFormat, setExportFormat] = useState("XHTML");
+  const [options, setOptions] = useState({
+    removeEmpty: true,
+    base64: false,
+    minify: false,
+  });
+
+  const toggleOption = (key) => setOptions(prev => ({ ...prev, [key]: !prev[key] }));
+
   const {
     file,
     fileName,
     fileSize,
-    error: uploadError,
-    isDragging,
     handleFileSelect,
-    handleDrop,
-    handleDragOver,
-    handleDragLeave,
-    clearFile,
   } = useFileUpload();
 
   const {
     html,
+    setHtml,
     status,
-    error: conversionError,
     messages,
     convert,
-    reset,
   } = useConversion();
 
   const handleConvert = useCallback(() => {
     if (file) convert(file);
   }, [file, convert]);
 
-  const handleReset = useCallback(() => {
-    clearFile();
-    reset();
-  }, [clearFile, reset]);
-
   const handleDownload = useCallback(() => {
-    const baseName = fileName.replace(/\.docx$/i, '') || 'converted';
+    if (!html) return;
+    const baseName = fileName ? fileName.replace(/\.docx$/i, '') : 'converted';
     downloadAsHtml(html, baseName);
   }, [html, fileName]);
 
   const handleCopy = useCallback(() => {
-    return copyToClipboard(html);
+    if (!html) return;
+    copyToClipboard(html);
   }, [html]);
 
   return (
-    <div style={styles.container}>
-      {/* Upload section */}
-      <div style={styles.section}>
-        <FileUploader
-          onFileSelect={handleFileSelect}
+    <div className="flex flex-col h-screen bg-[#f7f9fb] text-[#191c1e] font-sans overflow-hidden">
+      <Header />
+
+      <div className="flex flex-1 overflow-hidden">
+        <Sidebar 
+          options={options}
+          toggleOption={toggleOption}
+          exportFormat={exportFormat}
+          setExportFormat={setExportFormat}
+          file={file}
           fileName={fileName}
           fileSize={fileSize}
-          error={uploadError}
-          isDragging={isDragging}
-          onDrop={handleDrop}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
+          handleFileSelect={handleFileSelect}
         />
 
-        <ConversionControls
-          onConvert={handleConvert}
-          onReset={handleReset}
-          hasFile={!!file}
-          status={status}
-          error={conversionError}
-          messages={messages}
-        />
-      </div>
+        <main className="flex-1 flex flex-col min-w-0 bg-white">
+          <Toolbar 
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            onConvert={handleConvert}
+            onCopy={handleCopy}
+            onDownload={handleDownload}
+            status={status}
+          />
 
-      <hr style={styles.divider} />
-
-      {/* Output section */}
-      <div style={styles.section}>
-        <HtmlPreview html={html} status={status} />
-
-        <ExportActions
-          html={html}
-          fileName={fileName}
-          onDownload={handleDownload}
-          onCopy={handleCopy}
-        />
+          <div className="flex-1 flex overflow-hidden">
+             {/* Panels take 50/50 space on desktop. Tablet/Mobile uses tabs. */}
+             <div className={`flex-1 ${activeTab === 'preview' ? 'flex' : 'hidden md:flex'} border-r border-slate-200`}>
+                <DocumentPreview html={html} status={status} />
+             </div>
+             
+             <div className={`flex-1 ${activeTab === 'editor' ? 'flex' : 'hidden md:flex'}`}>
+                <HtmlOutput html={html} onHtmlChange={setHtml} />
+             </div>
+          </div>
+        </main>
       </div>
     </div>
   );

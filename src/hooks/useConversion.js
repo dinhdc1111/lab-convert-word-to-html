@@ -56,6 +56,7 @@ export function useConversion() {
 
   return {
     html,
+    setHtml,
     status,
     error,
     messages,
