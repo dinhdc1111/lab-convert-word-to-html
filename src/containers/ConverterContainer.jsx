@@ -10,7 +10,8 @@ import DocumentPreview from '../components/editor/DocumentPreview';
 import HtmlOutput from '../components/editor/HtmlOutput';
 
 export default function ConverterContainer() {
-  const [activeTab, setActiveTab] = useState("editor");
+  const [viewMode, setViewMode] = useState("split");
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [exportFormat, setExportFormat] = useState("XHTML");
   const [options, setOptions] = useState({
     removeEmpty: true,
@@ -64,12 +65,14 @@ export default function ConverterContainer() {
           fileName={fileName}
           fileSize={fileSize}
           handleFileSelect={handleFileSelect}
+          isCollapsed={isSidebarCollapsed}
+          setIsCollapsed={setIsSidebarCollapsed}
         />
 
         <main className="flex-1 flex flex-col min-w-0 bg-white">
           <Toolbar 
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
+            viewMode={viewMode}
+            setViewMode={setViewMode}
             onConvert={handleConvert}
             onCopy={handleCopy}
             onDownload={handleDownload}
@@ -77,14 +80,18 @@ export default function ConverterContainer() {
           />
 
           <div className="flex-1 flex overflow-hidden">
-             {/* Panels take 50/50 space on desktop. Tablet/Mobile uses tabs. */}
-             <div className={`flex-1 ${activeTab === 'preview' ? 'flex' : 'hidden md:flex'} border-r border-slate-200`}>
-                <DocumentPreview html={html} status={status} />
-             </div>
+             {/* Panels visibility is controlled by viewMode. 'split' shows both. */}
+             {(viewMode === 'preview' || viewMode === 'split') && (
+               <div className={`flex-1 flex border-r border-slate-200`}>
+                  <DocumentPreview html={html} status={status} />
+               </div>
+             )}
              
-             <div className={`flex-1 ${activeTab === 'editor' ? 'flex' : 'hidden md:flex'}`}>
-                <HtmlOutput html={html} onHtmlChange={setHtml} />
-             </div>
+             {(viewMode === 'code' || viewMode === 'split') && (
+               <div className={`flex-1 flex`}>
+                  <HtmlOutput html={html} onHtmlChange={setHtml} />
+               </div>
+             )}
           </div>
         </main>
       </div>
