@@ -13,14 +13,6 @@ export default function Sidebar({
 }) {
   const fileInputRef = useRef(null);
 
-  const formatFileSize = (bytes) => {
-    if (!bytes) return '0 KB';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
-  };
-
   const onUploadClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
