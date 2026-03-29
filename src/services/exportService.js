@@ -1,14 +1,15 @@
 import { saveAs } from 'file-saver';
-import { wrapInCpbankTemplate } from '../templates/cpbankTemplate';
+import { renderTemplateDocument, DEFAULT_TEMPLATE_ID } from './templateService';
 
 /**
- * Download HTML content as a .html file using the CPBank template.
+ * Download HTML content as a .html file using the selected template.
  *
  * @param {string} html - The HTML content (fragment, not full document)
  * @param {string} [filename='converted'] - Base filename without extension
+ * @param {string} [templateId='cpbank'] - Template identifier
  */
-export function downloadAsHtml(html, filename = 'converted') {
-  const fullDocument = wrapInCpbankTemplate(html, filename);
+export function downloadAsHtml(html, filename = 'converted', templateId = DEFAULT_TEMPLATE_ID) {
+  const fullDocument = renderTemplateDocument(templateId, html, filename);
   const blob = new Blob([fullDocument], { type: 'text/html;charset=utf-8' });
   saveAs(blob, `${filename}.html`);
 }
@@ -16,16 +17,20 @@ export function downloadAsHtml(html, filename = 'converted') {
 /**
  * Copy HTML content to the clipboard.
  *
- * @param {string} html - The HTML string to copy
+ * @param {string} html - The HTML content (fragment, not full document)
+ * @param {string} [templateId='cpbank'] - Template identifier
+ * @param {string} [title='Converted Document'] - Document title
  * @returns {Promise<boolean>} true if copy succeeded
  */
-export async function copyToClipboard(html) {
+export async function copyToClipboard(html, templateId = DEFAULT_TEMPLATE_ID, title = 'Converted Document') {
+  const fullDocument = renderTemplateDocument(templateId, html, title);
+
   try {
-    await navigator.clipboard.writeText(html);
+    await navigator.clipboard.writeText(fullDocument);
     return true;
   } catch {
     // Fallback for older browsers / insecure contexts
-    return fallbackCopy(html);
+    return fallbackCopy(fullDocument);
   }
 }
 

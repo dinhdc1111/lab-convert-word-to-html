@@ -4,7 +4,7 @@ export default function HtmlOutput({ html, onHtmlChange }) {
   const lineCount = html ? html.split('\n').length : 0;
 
   return (
-    <div className="flex-1 flex flex-col bg-[#0f172a]">
+    <div id="tour-code-output" className="flex-1 min-w-0 flex flex-col bg-[#0f172a]">
       <div className="px-6 py-3 bg-slate-900 border-b border-white/5 flex items-center justify-between">
         <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Generated HTML Output</span>
         <div className="flex items-center gap-4">
