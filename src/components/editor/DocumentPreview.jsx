@@ -3,7 +3,7 @@ import { motion } from 'motion/react';
 
 export default function DocumentPreview({ html, status }) {
   return (
-    <div className="flex-1 flex flex-col border-r border-slate-200 bg-slate-50/50">
+    <div className="flex-1 min-w-0 flex flex-col border-r border-slate-200 bg-slate-50/50">
       <div className="px-6 py-3 border-b border-slate-200 flex items-center justify-between bg-white/50">
         <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Document Preview</span>
         <div className="flex items-center gap-3 text-slate-400">

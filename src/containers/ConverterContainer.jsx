@@ -79,16 +79,16 @@ export default function ConverterContainer() {
             status={status}
           />
 
-          <div className="flex-1 flex overflow-hidden">
+           <div className="flex-1 flex overflow-hidden min-w-0">
              {/* Panels visibility is controlled by viewMode. 'split' shows both. */}
              {(viewMode === 'preview' || viewMode === 'split') && (
-               <div className={`flex-1 flex border-r border-slate-200`}>
+              <div className={`flex-1 min-w-0 flex border-r border-slate-200`}>
                   <DocumentPreview html={html} status={status} />
                </div>
              )}
              
              {(viewMode === 'code' || viewMode === 'split') && (
-               <div className={`flex-1 flex`}>
+              <div className={`flex-1 min-w-0 flex`}>
                   <HtmlOutput html={html} onHtmlChange={setHtml} />
                </div>
              )}
