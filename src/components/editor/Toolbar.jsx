@@ -12,7 +12,7 @@ export default function Toolbar({
   const isConverting = status === 'converting';
 
   const tabs = [
-    { id: 'split', label: 'Split View', icon: LayoutGrid },
+    { id: 'split', label: 'Parallel View', icon: LayoutGrid },
     { id: 'preview', label: 'Preview', icon: Eye },
     { id: 'code', label: 'Editor', icon: Code },
   ];

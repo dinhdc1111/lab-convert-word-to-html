@@ -24,6 +24,7 @@ export const cpbankStyles = `
   margin: 0;
   box-sizing: border-box;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  scrollbar-width: thin;
 }
 
 body {

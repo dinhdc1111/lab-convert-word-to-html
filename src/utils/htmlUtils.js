@@ -14,7 +14,7 @@ export function wrapInDocument(html, title = 'Converted Document') {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${escapeHtml(title)}</title>
   <style>
-    * { padding: 0; margin: 0; box-sizing: border-box; }
+    * { padding: 0; margin: 0; box-sizing: border-box; scrollbar-width: thin}
     body {
       font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       font-size: 16px;
