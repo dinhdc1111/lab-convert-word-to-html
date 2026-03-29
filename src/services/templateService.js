@@ -4,12 +4,12 @@ import { wrapInDocument } from '../utils/htmlUtils';
 export const TEMPLATE_OPTIONS = [
   {
     id: 'generic',
-    label: 'Generic',
+    label: 'Generic HTML (Default)',
     description: 'Clean neutral layout for general HTML export.',
   },
   {
     id: 'cpbank',
-    label: 'CPBank',
+    label: 'CPBank Template',
     description: 'Branded banking layout with CPBank header and legal styling.',
   },
 ];

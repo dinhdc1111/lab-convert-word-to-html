@@ -11,7 +11,7 @@ export default function Sidebar({
   setTemplateId,
   previewTemplateId,
   templateOptions,
-  onTemplatePreview,
+  // onTemplatePreview,
   clearTemplatePreview,
   file,
   fileName,
@@ -100,20 +100,12 @@ export default function Sidebar({
                   <button
                     key={template.id}
                     type="button"
-                    onClick={() => {
-                      if (isPreviewing) {
+                      onClick={() => {
+                        // Immediately select the clicked template.
+                        // Clear any preview state so the selected template is applied.
                         setTemplateId(template.id);
                         clearTemplatePreview();
-                        return;
-                      }
-
-                      if (isActive) {
-                        clearTemplatePreview();
-                        return;
-                      }
-
-                      onTemplatePreview(template.id);
-                    }}
+                      }}
                     className={`w-full text-left rounded-xl border p-3 transition-all ${
                       isActive
                         ? 'border-blue-600 bg-blue-50/90 shadow-sm'
