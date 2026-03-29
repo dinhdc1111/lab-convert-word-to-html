@@ -1,7 +1,12 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { useFileUpload } from '../hooks/useFileUpload';
 import { useConversion } from '../hooks/useConversion';
 import { downloadAsHtml, copyToClipboard } from '../services/exportService';
+import {
+  TEMPLATE_OPTIONS,
+  DEFAULT_TEMPLATE_ID,
+  renderTemplateDocument,
+} from '../services/templateService';
 
 import Header from '../components/layout/Header';
 import Sidebar from '../components/layout/Sidebar';
@@ -13,6 +18,8 @@ export default function ConverterContainer() {
   const [viewMode, setViewMode] = useState("split");
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [exportFormat, setExportFormat] = useState("XHTML");
+  const [selectedTemplateId, setSelectedTemplateId] = useState(DEFAULT_TEMPLATE_ID);
+  const [previewTemplateId, setPreviewTemplateId] = useState(null);
   const [options, setOptions] = useState({
     removeEmpty: true,
     base64: false,
@@ -32,9 +39,20 @@ export default function ConverterContainer() {
     html,
     setHtml,
     status,
-    messages,
     convert,
   } = useConversion();
+
+  const exportTitle = fileName ? fileName.replace(/\.docx$/i, '') : 'converted';
+  const effectivePreviewTemplateId = previewTemplateId || selectedTemplateId;
+
+  const previewDocumentHtml = useMemo(() => {
+    return renderTemplateDocument(
+      effectivePreviewTemplateId,
+      html,
+      exportTitle,
+      true,
+    );
+  }, [effectivePreviewTemplateId, html, exportTitle]);
 
   const handleConvert = useCallback(() => {
     if (file) convert(file);
@@ -42,14 +60,13 @@ export default function ConverterContainer() {
 
   const handleDownload = useCallback(() => {
     if (!html) return;
-    const baseName = fileName ? fileName.replace(/\.docx$/i, '') : 'converted';
-    downloadAsHtml(html, baseName);
-  }, [html, fileName]);
+    downloadAsHtml(html, exportTitle, selectedTemplateId);
+  }, [html, exportTitle, selectedTemplateId]);
 
   const handleCopy = useCallback(() => {
     if (!html) return;
-    copyToClipboard(html);
-  }, [html]);
+    copyToClipboard(html, selectedTemplateId, exportTitle);
+  }, [html, selectedTemplateId, exportTitle]);
 
   return (
     <div className="flex flex-col h-screen bg-[#f7f9fb] text-[#191c1e] font-sans overflow-hidden">
@@ -61,6 +78,12 @@ export default function ConverterContainer() {
           toggleOption={toggleOption}
           exportFormat={exportFormat}
           setExportFormat={setExportFormat}
+          templateId={selectedTemplateId}
+          setTemplateId={setSelectedTemplateId}
+          previewTemplateId={previewTemplateId}
+          templateOptions={TEMPLATE_OPTIONS}
+          onTemplatePreview={setPreviewTemplateId}
+          clearTemplatePreview={() => setPreviewTemplateId(null)}
           file={file}
           fileName={fileName}
           fileSize={fileSize}
@@ -83,7 +106,10 @@ export default function ConverterContainer() {
              {/* Panels visibility is controlled by viewMode. 'split' shows both. */}
              {(viewMode === 'preview' || viewMode === 'split') && (
               <div className={`flex-1 min-w-0 flex border-r border-slate-200`}>
-                  <DocumentPreview html={html} status={status} />
+                  <DocumentPreview
+                    previewDocumentHtml={previewDocumentHtml}
+                    status={status}
+                  />
                </div>
              )}
              

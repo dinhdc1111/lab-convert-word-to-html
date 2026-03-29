@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { FileText, Upload, ChevronLeft, ChevronRight, Settings, Sliders } from 'lucide-react';
+import { FileText, Upload, ChevronLeft, ChevronRight, Sliders } from 'lucide-react';
 import OptionToggle from '../common/OptionToggle';
 
 export default function Sidebar({
@@ -7,6 +7,12 @@ export default function Sidebar({
   toggleOption,
   exportFormat,
   setExportFormat,
+  templateId,
+  setTemplateId,
+  previewTemplateId,
+  templateOptions,
+  onTemplatePreview,
+  clearTemplatePreview,
   file,
   fileName,
   handleFileSelect,
@@ -80,6 +86,56 @@ export default function Sidebar({
                   {format}
                 </button>
               ))}
+            </div>
+          </section>
+
+          <section className={`pt-6 border-t border-slate-300/50 w-full ${isCollapsed ? 'hidden' : ''}`}>
+            <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-4 px-1">Template</h3>
+            <div className="space-y-2">
+              {templateOptions.map((template) => {
+                const isActive = templateId === template.id;
+                const isPreviewing = previewTemplateId === template.id && !isActive;
+
+                return (
+                  <button
+                    key={template.id}
+                    type="button"
+                    onClick={() => {
+                      if (isPreviewing) {
+                        setTemplateId(template.id);
+                        clearTemplatePreview();
+                        return;
+                      }
+
+                      if (isActive) {
+                        clearTemplatePreview();
+                        return;
+                      }
+
+                      onTemplatePreview(template.id);
+                    }}
+                    className={`w-full text-left rounded-xl border p-3 transition-all ${
+                      isActive
+                        ? 'border-blue-600 bg-blue-50/90 shadow-sm'
+                        : isPreviewing
+                          ? 'border-amber-400 bg-amber-50/90 shadow-sm'
+                        : 'border-slate-300 bg-white hover:border-blue-300 hover:bg-blue-50/40'
+                    }`}
+                  >
+                    <p className={`text-xs font-bold ${isActive ? 'text-blue-700' : 'text-slate-700'}`}>
+                      {template.label}
+                    </p>
+                    <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">
+                      {template.description}
+                    </p>
+                    {isPreviewing ? (
+                      <p className="text-[10px] mt-2 font-semibold text-amber-700">
+                        Previewing. Click again to apply.
+                      </p>
+                    ) : null}
+                  </button>
+                );
+              })}
             </div>
           </section>
         </div>
