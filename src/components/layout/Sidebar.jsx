@@ -5,8 +5,8 @@ import OptionToggle from '../common/OptionToggle';
 export default function Sidebar({
   options,
   toggleOption,
-  exportFormat,
-  setExportFormat,
+  // exportFormat,
+  // setExportFormat,
   templateId,
   setTemplateId,
   previewTemplateId,
@@ -70,7 +70,7 @@ export default function Sidebar({
             </div>
           </section>
 
-          <section className={`pt-6 border-t border-slate-300/50 w-full ${isCollapsed ? 'hidden' : ''}`}>
+          {/* <section className={`pt-6 border-t border-slate-300/50 w-full ${isCollapsed ? 'hidden' : ''}`}>
             <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-4 px-1">Export Format</h3>
             <div className="grid grid-cols-2 gap-2 p-1 bg-slate-200/50 rounded-xl">
               {(["HTML5", "XHTML"]).map((format) => (
@@ -87,7 +87,7 @@ export default function Sidebar({
                 </button>
               ))}
             </div>
-          </section>
+          </section> */}
 
           <section id="tour-template-selector" className={`pt-6 border-t border-slate-300/50 w-full ${isCollapsed ? 'hidden' : ''}`}>
             <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-4 px-1">Template</h3>
