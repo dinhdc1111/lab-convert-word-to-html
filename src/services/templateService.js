@@ -3,18 +3,18 @@ import { wrapInDocument } from '../utils/htmlUtils';
 
 export const TEMPLATE_OPTIONS = [
   {
-    id: 'cpbank',
-    label: 'CPBank',
-    description: 'Branded banking layout with CPBank header and legal styling.',
-  },
-  {
     id: 'generic',
     label: 'Generic',
     description: 'Clean neutral layout for general HTML export.',
   },
+  {
+    id: 'cpbank',
+    label: 'CPBank',
+    description: 'Branded banking layout with CPBank header and legal styling.',
+  },
 ];
 
-export const DEFAULT_TEMPLATE_ID = 'cpbank';
+export const DEFAULT_TEMPLATE_ID = 'generic';
 
 const PREVIEW_SAMPLE_BODY = `
   <h1 class="title">Template Preview</h1>
