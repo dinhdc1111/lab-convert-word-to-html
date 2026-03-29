@@ -2,7 +2,7 @@ import { ZoomIn, ZoomOut } from 'lucide-react';
 
 export default function DocumentPreview({ previewDocumentHtml, status }) {
   return (
-    <div className="flex-1 min-w-0 flex flex-col border-r border-slate-200 bg-slate-50/50">
+    <div id="tour-document-preview" className="flex-1 min-w-0 flex flex-col border-r border-slate-200 bg-slate-50/50">
       <div className="px-6 py-3 border-b border-slate-200 flex items-center justify-between bg-white/50">
         <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">Document Preview</span>
         <div className="flex items-center gap-3 text-slate-400">

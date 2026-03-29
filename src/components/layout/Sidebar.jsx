@@ -39,7 +39,7 @@ export default function Sidebar({
 
       <div className={`flex-1 overflow-y-auto custom-scrollbar ${isCollapsed ? 'overflow-x-hidden' : ''}`}>
         <div className={`p-6 space-y-8 ${isCollapsed ? 'flex flex-col items-center px-0' : ''}`}>
-          <section className="w-full">
+          <section id="tour-sidebar-options" className="w-full">
             {!isCollapsed ? (
               <h2 className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-6 px-1">Conversion Options</h2>
             ) : (
@@ -89,7 +89,7 @@ export default function Sidebar({
             </div>
           </section>
 
-          <section className={`pt-6 border-t border-slate-300/50 w-full ${isCollapsed ? 'hidden' : ''}`}>
+          <section id="tour-template-selector" className={`pt-6 border-t border-slate-300/50 w-full ${isCollapsed ? 'hidden' : ''}`}>
             <h3 className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-4 px-1">Template</h3>
             <div className="space-y-2">
               {templateOptions.map((template) => {
@@ -167,7 +167,8 @@ export default function Sidebar({
           ref={fileInputRef} 
           onChange={handleFileSelect} 
         />
-        <button 
+        <button
+          id="tour-upload-button"
           onClick={onUploadClick}
           className={`flex items-center justify-center rounded-xl bg-white border border-slate-300 text-slate-700 font-semibold hover:bg-slate-50 transition-all active:scale-95 shadow-sm ${
             isCollapsed ? 'w-10 h-10 p-0' : 'w-full py-2.5 px-4 gap-2 text-xs'

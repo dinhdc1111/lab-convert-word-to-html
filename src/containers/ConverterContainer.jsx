@@ -1,7 +1,11 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { useFileUpload } from '../hooks/useFileUpload';
 import { useConversion } from '../hooks/useConversion';
 import { downloadAsHtml, copyToClipboard } from '../services/exportService';
+import {
+  hasSeenOnboardingTour,
+  startOnboardingTour,
+} from '../services/onboardingTourService';
 import {
   TEMPLATE_OPTIONS,
   DEFAULT_TEMPLATE_ID,
@@ -15,6 +19,7 @@ import DocumentPreview from '../components/editor/DocumentPreview';
 import HtmlOutput from '../components/editor/HtmlOutput';
 
 export default function ConverterContainer() {
+  const hasAutoStartedTour = useRef(false);
   const [viewMode, setViewMode] = useState("split");
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [exportFormat, setExportFormat] = useState("XHTML");
@@ -44,6 +49,7 @@ export default function ConverterContainer() {
 
   const exportTitle = fileName ? fileName.replace(/\.docx$/i, '') : 'converted';
   const effectivePreviewTemplateId = previewTemplateId || selectedTemplateId;
+  const hasConvertedData = Boolean(html?.trim());
 
   const previewDocumentHtml = useMemo(() => {
     return renderTemplateDocument(
@@ -68,9 +74,24 @@ export default function ConverterContainer() {
     copyToClipboard(html, selectedTemplateId, exportTitle);
   }, [html, selectedTemplateId, exportTitle]);
 
+  const handleStartGuide = useCallback(() => {
+    startOnboardingTour();
+  }, []);
+
+  useEffect(() => {
+    if (hasAutoStartedTour.current || hasSeenOnboardingTour()) return;
+
+    hasAutoStartedTour.current = true;
+    const timer = setTimeout(() => {
+      startOnboardingTour();
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div className="flex flex-col h-screen bg-[#f7f9fb] text-[#191c1e] font-sans overflow-hidden">
-      <Header />
+      <Header onStartGuide={handleStartGuide} />
 
       <div className="flex flex-1 overflow-hidden">
         <Sidebar 
@@ -100,6 +121,7 @@ export default function ConverterContainer() {
             onCopy={handleCopy}
             onDownload={handleDownload}
             status={status}
+            hasConvertedData={hasConvertedData}
           />
 
            <div className="flex-1 flex overflow-hidden min-w-0">
